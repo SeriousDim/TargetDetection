@@ -3,7 +3,11 @@ import uvicorn
 from pydantic import BaseModel, EmailStr
 from pyexpat.errors import messages
 
+from detection.routes import service_router
+
 app = FastAPI()
+
+app.include_router(service_router)
 
 class CreateUser(BaseModel):
     email: EmailStr
