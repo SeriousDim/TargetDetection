@@ -22,22 +22,20 @@ def get_boxes_with_labels(class_lists, class_label):
     return boxes
 
 
+# ! Изменил
 def model_boxes_to_targets(class_lists):
-    try:
-        coords = class_lists[1]
-    except KeyError:
-        return []
     targets = []
+    target_coords = class_lists.get(0.0, [])
 
-    for i in range(len(coords)):
-        c = coords[i]
-        targets.append(Target(
-            id=i,
-            center=GeometricalPoint(x=c[0], y=c[1]),
-            width=c[2],
-            height=c[3]
-        ))
-
+    for i, c in enumerate(target_coords):
+        targets.append(
+            Target(
+                id=i,
+                center=GeometricalPoint(x=c[0], y=c[1]),
+                width=c[2],
+                height=c[3],
+            )
+        )
     return targets
 
 
