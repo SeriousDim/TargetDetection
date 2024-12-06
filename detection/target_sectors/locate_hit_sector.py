@@ -19,9 +19,12 @@ def locate_point_sector(point: GeometricalPoint, target: Target) -> Sector | Non
     if SectorConfig.center_sector.contains_point(p):
         return SectorConfig.center_sector
     for sector in SectorConfig.angle_sectors:
+        # обрабатываем этот сектор отдельно, так как он находится на границе оси X
+        if sector.name == '3':
+            continue
         if sector.contains_point(p):
             return sector
-    return None
+    return SectorConfig.angle_sectors[1]
 
 
 def locate_hit_sector(hit: Hit, target: Target) -> HitSector:
