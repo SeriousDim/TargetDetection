@@ -27,7 +27,7 @@ def draw_hit(image, sector_name: str, hit: Hit):
     y2 = hit.center.y + hit.height / 2
     draw.rectangle([x1, y1, x2, y2], outline=(0, 255, 255), width=2)
 
-    font = ImageFont.truetype('arial.ttf', 14)
+    font = ImageFont.truetype('arial.ttf', 30)
     draw.text((x1 + 1, y1 + 1), sector_name, (0, 255, 255), font=font)
 
 
