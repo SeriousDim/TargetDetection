@@ -4,6 +4,7 @@ from geometry.point import GeometricalPoint
 
 class Target(Geometry):
     id: int
+    name: str
 
     def contains_point(self, point: GeometricalPoint):
         half_width = self.width / 2
