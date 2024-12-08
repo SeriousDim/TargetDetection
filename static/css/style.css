@@ -1,0 +1,217 @@
+/* Основные стили */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Минимальная высота равна высоте экрана */
+    background-color: #F6F6F6; /* Светло-серый фон */
+    font-family: 'Montserrat', sans-serif;
+    color: #222222; /* Основной текст — чёрный */
+}
+
+.page-wrapper {
+    flex: 1; /* Контент заполняет оставшееся пространство */
+    display: flex;
+    flex-direction: column; /* Контейнер и его дети */
+}
+
+/* Шапка */
+.header {
+    background: linear-gradient(90deg, #1E4391 0%, #EF302B 100%); /* Градиент от синего к красному */
+    color: #FFFFFF;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 108px;
+}
+
+.header .logo {
+    width: 150px; /* Логотип уменьшен пропорционально */
+    height: auto;
+    filter: grayscale(100%) brightness(1000%);
+}
+
+.header .title {
+    font-size: 40px; /* Заголовок */
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Основной контент */
+.wrapper {
+    flex: 1; /* Занимает всё доступное пространство */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Отступ перед футером */
+}
+
+.container-fluid {
+    width: 100%; /* Блок занимает всю ширину */
+    margin: 0;
+    padding: 40px; /* Общий отступ */
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px; /* Промежуток между панелями */
+}
+
+.col-md-4,
+.col-md-8 {
+    flex: 1; /* Панели занимают равную ширину */
+    min-width: 300px; /* Минимальная ширина панели */
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1E4391; /* Синий цвет заголовков */
+}
+
+/* Формы */
+.form-group label {
+    font-size: 16px;
+    color: #222222;
+    opacity: 0.8; /* Поля ввода с прозрачностью 20% */
+}
+
+.form-control-file {
+    border: 1px solid #22222233; /* Поля ввода — прозрачный чёрный */
+    border-radius: 4px;
+    padding: 8px;
+    width: 100%;
+}
+
+.btn-custom {
+    background-color: #1E4391; /* Основной синий цвет кнопки */
+    color: #FFFFFF;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #0F2B5E; /* Темно-синий при наведении */
+    color: #FFFFFF;
+}
+
+/* Таблица результатов */
+.table {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+    width: 100%; /* Таблица занимает всю ширину */
+}
+
+.table th {
+    background-color: #1E4391; /* Синий цвет заголовков таблицы */
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px;
+    white-space: nowrap; /* Предотвращает перенос текста */
+}
+
+.table td {
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    color: #222222; /* Чёрный текст */
+}
+
+/* Фиксированная ширина для первых трёх колонок */
+.table th.fixed-width, .table td.fixed-width {
+    width: 100px; /* Достаточно для 20 символов */
+    white-space: nowrap; /* Отключаем перенос текста */
+}
+
+/* Гибкая ширина для колонки "Рекомендации" */
+.table th.flexible-width, .table td.flexible-width {
+    width: auto; /* Занимает оставшуюся ширину */
+    text-align: center; /* Центрируем текст в колонке "Рекомендации" */
+    word-wrap: break-word; /* Перенос длинных слов */
+}
+
+/* Размеченное изображение */
+.image-container {
+    position: relative;
+    width: 100%;
+    height: auto; /* Укажите высоту контейнера */
+    background-color: #f6f6f6; /* Светло-серый фон */
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none; /* Убираем границу */
+}
+
+.placeholder {
+    font-size: 24px;
+    color: #999; /* Серый цвет текста */
+}
+
+#annotated-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Изображение адаптируется */
+}
+
+img {
+    outline: none;
+    border: none;
+    -webkit-tap-highlight-color: transparent; /* Убирает выделение на мобильных устройствах */
+}
+
+/* Футер */
+.footer {
+    background-color: #1E4391; /* Синий фон */
+    color: #FFFFFF;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: auto;
+    flex-shrink: 0; /* Футер остаётся внизу */
+}
+
+.footer p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header .logo {
+        margin-bottom: 10px;
+    }
+
+    .container-fluid {
+        padding: 20px;
+    }
+
+    .row {
+        flex-direction: column; /* Панели будут вертикально */
+        gap: 20px; /* Меньший промежуток */
+    }
+
+    .table th, .table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn-custom {
+        font-size: 14px;
+        padding: 12px;
+    }
+}

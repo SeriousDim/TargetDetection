@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ мишени</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="/static/icons/logo_ico.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="container d-flex justify-content-center">   
+            <!-- <div class="container d-flex align-items-center justify-content-between"> -->
+                <!-- <img src="/static/icons/logo_napis_png.png" alt="Логотип" class="logo"> -->
+                <h1 class="title">Сбор и разметка набора данных для тира</h1>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <div class="wrapper">
+            <main class="container-fluid mt-5">
+                <div class="row">
+                    <!-- Левая панель -->
+                    <div class="col-md-4">
+                        <h3 class="section-title">Загрузите изображение</h3>
+                        <form id="upload-form" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file-upload">Файл:</label>
+                                <input type="file" class="form-control-file" id="file-upload" name="file">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block btn-custom">Анализ</button>
+                        </form>
+                    </div>
+
+                    <!-- Правая панель -->
+                    <div class="col-md-8">
+                        <h3 class="section-title">Результаты анализа</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="fixed-width">Мишень</th>
+                                    <th class="fixed-width">Количество попаданий</th>
+                                    <th class="fixed-width">Сектора</th>
+                                    <th class="flexible-width">Рекомендации</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fixed-width" id="target-name">-</td>
+                                    <td class="fixed-width" id="hits-count">-</td>
+                                    <td class="fixed-width" id="hits-sectors">-</td>
+                                    <td class="flexible-width" id="recommendation">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4 class="section-title">Размеченное изображение:</h4>
+                        <div class="image-container position-relative">
+                            <span id="placeholder" class="placeholder"></span>
+                            <img id="annotated-image" class="img-fluid d-none" alt="Результат анализа">
+                        </div>
+                        <div class="text-center mt-3">
+                            <button id="download-btn" class="btn btn-primary btn-custom d-none">
+                                Скачать изображение
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container text-center">
+                <p>Солодникова София</p>
+                <p>Лыков Дмитрий</p>
+                <p>Алексеев Лев</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript блок -->
+    <script>
+        const form = document.getElementById('upload-form');
+        const fileInput = document.getElementById('file-upload');
+        const targetName = document.getElementById('target-name');
+        const hitsCount = document.getElementById('hits-count');
+        const hitsSectors = document.getElementById('hits-sectors');
+        const recommendation = document.getElementById('recommendation');
+        const annotatedImage = document.getElementById('annotated-image');
+        const placeholder = document.getElementById('placeholder');
+        const downloadBtn = document.getElementById('download-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/visualization_recommendations', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await response.json();
+
+                targetName.textContent = data.target_name;
+                hitsCount.textContent = data.hits_sectors.length;
+                hitsSectors.textContent = data.hits_sectors.join(', ');
+                recommendation.textContent = data.recommendation;
+
+                // Отображаем изображение и скрываем прочерк
+                annotatedImage.src = `data:image/png;base64,${data.image}`;
+                annotatedImage.classList.remove('d-none'); // Показываем изображение
+                placeholder.style.display = 'none'; // Скрываем прочерк
+
+                // Показываем кнопку для скачивания изображения
+                downloadBtn.classList.remove('d-none');
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = `data:image/png;base64,${data.image}`;
+                    link.download = 'annotated_image.png';
+                    link.click();
+                };
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        });
+    </script>
+</body>
+</html>
