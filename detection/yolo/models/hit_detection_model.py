@@ -8,5 +8,5 @@ class HitDetectionModel(DetectionModel):
     _model = best_model = YOLO(_best_weights, task="detect")
 
     def detect(self, image_paths):
-        self.results = self._model(image_paths)
+        self.results = self._model(image_paths, iou=0.5)
         return self.results
