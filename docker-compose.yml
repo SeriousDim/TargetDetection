@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    networks:
+      - main_network
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:./nginx/default.conf
+    depends_on:
+      - fastapi
+    networks:
+      - main_network
+
+networks:
+  main_network:
+    driver: bridge
