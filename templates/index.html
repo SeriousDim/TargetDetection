@@ -100,7 +100,7 @@
             formData.append('file', fileInput.files[0]);
 
             try {
-                const response = await fetch('/visualization_recommendations', {
+                const response = await fetch('/recommendations', {
                     method: 'POST',
                     body: formData,
                 });
