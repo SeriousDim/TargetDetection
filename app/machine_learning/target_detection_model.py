@@ -8,7 +8,7 @@ from app.machine_learning.base_model import DetectionModel
 class TargetDetectionModel(DetectionModel):
     _best_weights = os.path.join(
         os.path.dirname(__file__),
-        "resources/hit_weights.pt",
+        "resources/target_weights.pt",
     )
     _model = best_model = YOLO(_best_weights, task="detect")
 
