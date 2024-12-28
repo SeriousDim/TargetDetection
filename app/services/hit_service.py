@@ -1,7 +1,8 @@
 from app.models.dto.hit import Hit
+from app.models.geometry.geometry import Geometry
 
 
-def calculate_iou(hit1: Hit, hit2: Hit) -> float:
+def calculate_iou(hit1: Geometry, hit2: Geometry) -> float:
     x1 = max(hit1.center.x - hit1.width / 2, hit2.center.x - hit2.width / 2)
     y1 = max(hit1.center.y - hit1.height / 2, hit2.center.y - hit2.height / 2)
     x2 = min(hit1.center.x + hit1.width / 2, hit2.center.x + hit2.width / 2)

@@ -7,5 +7,3 @@ class Geometry(BaseModel):
     center: GeometricalPoint
     width: float
     height: float
-
-
