@@ -1,3 +1,4 @@
+import os
 import pytest
 from PIL import Image
 
@@ -12,7 +13,7 @@ IOU_THRESHOLD = 0.75
 
 
 def script(model, image_name):
-    image = Image.open(f"../resources/{image_name}.jpg")
+    image = Image.open(f"{os.path.dirname(os.path.abspath(__file__))}/../resources/{image_name}.jpg")
     model.detect([image])
     box = model.get_boxes()[0.0]
     name, stage = image_name.split('_')

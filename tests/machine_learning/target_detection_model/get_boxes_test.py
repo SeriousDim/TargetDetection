@@ -2,11 +2,12 @@ import os
 import pytest
 
 from app.machine_learning.hit_detection_model import HitDetectionModel
+from app.machine_learning.target_detection_model import TargetDetectionModel
 
 
 @pytest.fixture
 def model():
-    yield HitDetectionModel()
+    yield TargetDetectionModel()
 
 
 def test_get_boxes_return_format(model):
