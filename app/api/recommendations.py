@@ -41,7 +41,6 @@ async def recommendations(file: UploadFile = File(...)):
         hits = boxes_to_hits(hit_boxes)
 
         target = targets[0]
-        print(f"Targets detected: {target}")
         new_hits = filter_new_hits(hits, target.name)
 
         draw_target_grid(image, target)

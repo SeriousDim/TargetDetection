@@ -8,14 +8,12 @@ def target_label_to_name(label):
 
 
 def boxes_to_targets(class_lists):
-    print(f"Raw target detection boxes: {class_lists}")
     targets = []
     current_id = 0
 
     for label in class_lists.keys():
         boxes = class_lists[label]
         for box in boxes:
-            print(f"Converting box to target: {box}, label: {label}")
             targets.append(
                 Target(
                     id=current_id,
@@ -26,7 +24,6 @@ def boxes_to_targets(class_lists):
                 )
             )
             current_id += 1
-    print(f"Detected target boxes: {class_lists}")
     return targets
 
 
