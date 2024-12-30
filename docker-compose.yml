@@ -6,11 +6,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - ./app:/app
-      - ./data:/data
-      - ./templates:/app/templates
-      - ./static:/app/static
+    #volumes:
+    #  - ./app:/app
+    #  - ./data:/data
+    # - ./templates:/app/templates
+    #  - ./static:/app/static
     environment:
       - PYTHONUNBUFFERED=1
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    # command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

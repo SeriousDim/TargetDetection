@@ -5,14 +5,13 @@ FROM python:3.11.2-slim
 WORKDIR /app
 
 # Скопировать requirements.txt и установить зависимости
-COPY requirements.txt .
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Скопировать весь проект в контейнер
-COPY . .
+COPY . /app
 
-# Установить переменную окружения для FastAPI
-ENV PYTHONPATH=/app
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 # Команда запуска
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["python", "run.py"]

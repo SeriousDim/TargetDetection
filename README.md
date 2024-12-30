@@ -4,31 +4,30 @@
 
 ## Технологии:
 
-FastAPI, JavaScript, HTML, CSS, {продолжить по омновным}....
+Python, FastAPI, PyTest, Docker, Ultralytics
+JavaScript, HTML, CSS
 
 ## Описание проекта:
-{описание}.
+Веб-сервис для автоматизации работы тира с помощью детекции мишеней и попаданий по ним. В сервис загружается изображение, на котором разспознаются мишень и новые появившиеся попадания.
 
 ## Установка:
 
-1. Склонируйте репозиторий на локальную машину:
+1. Склонировать репозиторий:
    
     ```bash
     $ git clone https://github.com/SeriousDim/TargetDetection.git
     ```
 
-2. Cоздайте и активируйте виртуальное окржение, установите зависимости:
+2. Сбилдить контейнер Docker:
    
     ```bash
-    $ python -m venv venv
-    $ source venv/Scripts/activate
-    $ pip install -r requirements.txt
+    $ docker-compose build
     ```
 
-3. Запустите проект на локальном сервере:
+3. Запуск проект:
    
     ```bash
-    $ python -m uvicorn main:app --reload
+    $ docker-compose up
     ```
 
 Проект будет доступен по адресу: http://127.0.0.1:8000/
