@@ -62,6 +62,9 @@ async def recommendations(file: UploadFile = File(...)):
     else if len(sectors_inside_target) == 4:
         Ищем рекомендацию
 
+    if len(sectors_inside_target) + len(sectors_outside_target) < 4:
+        Рекомендаций нет
+    
     answer = sectors_inside_target
 
     for i in range(4 - len(answer)):
