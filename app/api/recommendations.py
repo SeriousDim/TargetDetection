@@ -53,6 +53,21 @@ async def recommendations(file: UploadFile = File(...)):
         "utf-8"
     )
 
+    """
+    sectors_outside_target = filter(lambda e: e.sector == "0" or "10", hit_sectors)    
+    sectors_inside_target = filter(lambda e: e.sector >= "1" and e.sector <= "9", hit_sectors)
+
+    if len(sectors_inside_target) > 4:
+        Рекомендаций нет
+    else if len(sectors_inside_target) == 4:
+        Ищем рекомендацию
+
+    answer = sectors_inside_target
+
+    for i in range(4 - len(answer)):
+        answer.append(sectors_outside_target[i])
+    
+    """
     sectors = ", ".join([f"С{sector.sector}" for sector in hit_sectors])
     recommendation = get_recommendations_for_sectors(sectors)
 

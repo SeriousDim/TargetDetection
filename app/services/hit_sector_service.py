@@ -5,11 +5,14 @@ from app.models.dto.hit import Hit
 from app.models.dto.hit_sector import HitSector
 from app.models.dto.target import Target
 from app.models.geometry.point import GeometricalPoint
+from app.models.sectors.sector import Sector
 
 
 def locate_point_sector(point: GeometricalPoint, target: Target):
+    if #точка ниже нижней линии мишени:
+        return Sector(name="10")
     if not target.contains_point(point):
-        return None
+        return Sector(name="0")
 
     normalized_point = GeometricalPoint(
         x=(point.x - target.center.x) / target.width,
@@ -39,10 +42,7 @@ def locate_hit_sector(hit: Hit, target: Target) -> HitSector:
             ),
             target,
         )
-        if result is None:
-            sectors.append("10")
-        else:
-            sectors.append(result.name)
+        sectors.append(result.name)
 
     if "1" in sectors:
         total_sector = "1"
