@@ -81,7 +81,7 @@ async def recommendations(file: UploadFile = File(...)):
 
     print(f"Финальные сектора: {primary_sectors}")
 
-    draw_hits(image, primary_sectors, new_hits)
+    draw_hits(image, hit_sectors, new_hits)
 
     img_byte_arr = BytesIO()
     image.save(img_byte_arr, format="PNG")
