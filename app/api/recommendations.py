@@ -7,6 +7,8 @@ from PIL import Image
 from app.machine_learning.hit_detection_model import HitDetectionModel
 from app.machine_learning.target_detection_model import TargetDetectionModel
 from app.models.dto.hit_sector import HitSector
+from app.models.dto.target import Target
+from app.models.geometry.point import GeometricalPoint
 from app.services.hit_sector_service import locate_hit_sector
 from app.services.hit_service import filter_new_hits
 from app.services.image_processing import boxes_to_hits, boxes_to_targets
@@ -34,13 +36,16 @@ async def recommendations(file: UploadFile = File(...)):
     targets = boxes_to_targets(target_boxes)
 
     if not targets:
-        return {"message": "Мишени не найдены."}
+        # return {"message": "Мишени не найдены."}
+        target = Target(id=0, name="-", center=GeometricalPoint(x=image.size[0] * 0.5, y=image.size[1] * 0.5), 
+                        width=image.size[0], height=image.size[1])
+    else:
+        target = targets[0]
 
     hit_model.detect([image])
     hit_boxes = hit_model.get_boxes()
     hits = boxes_to_hits(hit_boxes)
 
-    target = targets[0]
     new_hits = filter_new_hits(hits, target.name)
 
     draw_target_grid(image, target)
