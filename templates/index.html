@@ -33,6 +33,9 @@
                                 <input type="file" class="form-control-file" id="file-upload" name="file">
                             </div>
                             <button type="submit" class="btn btn-primary btn-block btn-custom">Анализ</button>
+                            <button id="clear-hits-btn" class="btn btn-primary btn-block btn-custom d-none">
+                                Очистить предыдущие попадания
+                            </button>
                         </form>
                     </div>
 
@@ -71,7 +74,13 @@
                 </div>
             </main>
         </div>
-
+        <!-- Модальное окно -->
+        <div id="clear-hits-modal" class="custom-modal">
+            <div class="custom-modal-content">
+                <span id="close-modal-btn" class="custom-close-btn">&times;</span>
+                <p>Предыдущие попадания не будут учитываться при следующих загрузках мишени.</p>
+            </div>
+        </div>
         <!-- Footer -->
         <footer class="footer">
             <div class="container text-center">
@@ -93,30 +102,45 @@
         const annotatedImage = document.getElementById('annotated-image');
         const placeholder = document.getElementById('placeholder');
         const downloadBtn = document.getElementById('download-btn');
-
+    
+        const clearHitsBtn = document.getElementById('clear-hits-btn');
+        const clearHitsModal = document.getElementById('clear-hits-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+    
+        let isClearingHits = false;  // Флаг, предотвращающий повторный запуск анализа
+    
+        // 📤 Отправка формы анализа изображения
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+    
+            if (isClearingHits) {
+                console.warn("Очистка в процессе, загрузка отменена.");
+                return;
+            }
+    
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-
+    
             try {
                 const response = await fetch('/recommendations', {
                     method: 'POST',
                     body: formData,
                 });
+    
                 const data = await response.json();
-
+    
+                // Отображение результатов
                 targetName.textContent = data.target_name;
                 hitsCount.textContent = data.hits_sectors.length;
                 hitsSectors.textContent = data.hits_sectors.join(', ');
                 recommendation.textContent = data.recommendation;
-
-                // Отображаем изображение и скрываем прочерк
+    
+                // Отображение размеченного изображения
                 annotatedImage.src = `data:image/png;base64,${data.image}`;
-                annotatedImage.classList.remove('d-none'); // Показываем изображение
-                placeholder.style.display = 'none'; // Скрываем прочерк
-
-                // Показываем кнопку для скачивания изображения
+                annotatedImage.classList.remove('d-none');
+                placeholder.style.display = 'none';
+    
+                // Показать кнопку для скачивания изображения
                 downloadBtn.classList.remove('d-none');
                 downloadBtn.onclick = () => {
                     const link = document.createElement('a');
@@ -124,8 +148,63 @@
                     link.download = 'annotated_image.png';
                     link.click();
                 };
+    
+                // Показать кнопку "Очистить попадания", если есть попадания
+                if (data.hits_sectors.length > 0) {
+                    clearHitsBtn.classList.remove('d-none');
+                }
             } catch (error) {
                 console.error('Ошибка:', error);
+            }
+        });
+    
+        // 🗑️ Обработчик кнопки "Очистить предыдущие попадания"
+        clearHitsBtn.addEventListener('click', async () => {
+            isClearingHits = true;  // Устанавливаем флаг на время очистки
+    
+            try {
+                const response = await fetch('/clear_hits', {
+                    method: 'POST',
+                });
+    
+                if (response.ok) {
+                    console.log("Попадания очищены");
+    
+                    // Показать модальное окно
+                    clearHitsModal.style.display = 'block';
+    
+                    // Полная очистка интерфейса
+                    targetName.textContent = '-';
+                    hitsCount.textContent = '-';
+                    hitsSectors.textContent = '-';
+                    recommendation.textContent = '-';
+                    annotatedImage.classList.add('d-none');
+                    placeholder.style.display = 'block';
+                    downloadBtn.classList.add('d-none');
+                    clearHitsBtn.classList.add('d-none');
+    
+                    // Убираем флаг через 2 секунды, чтобы избежать повторной загрузки
+                    setTimeout(() => {
+                        isClearingHits = false;
+                        location.reload();  // Полная перезагрузка страницы
+                    }, 2000);
+                } else {
+                    console.error('Ошибка при очистке попаданий');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        });
+    
+        // Закрытие модального окна по нажатию на крестик
+        closeModalBtn.addEventListener('click', () => {
+            clearHitsModal.style.display = 'none';
+        });
+    
+        // Закрытие модального окна по клику вне его области
+        window.addEventListener('click', (event) => {
+            if (event.target === clearHitsModal) {
+                clearHitsModal.style.display = 'none';
             }
         });
     </script>

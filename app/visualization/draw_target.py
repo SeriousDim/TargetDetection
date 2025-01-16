@@ -18,5 +18,3 @@ def draw_target_box(image, target: Target):
         outline=(0, 255, 255),
         width=SectorConfig.line_width,
     )
-    # Отрисовка текста в центре мишени
-    draw.text((target.center.x, target.center.y), "Target", fill=(255, 0, 0))

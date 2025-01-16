@@ -36,3 +36,8 @@ def filter_new_hits(hits: list[Hit], target_name: str) -> list[Hit]:
 
     previous_hits[target_name] = old_hits + new_hits
     return new_hits
+
+
+def clear_previous_hits():
+    global previous_hits
+    previous_hits = {}

@@ -10,7 +10,7 @@ def get_recommendations_for_sectors(sectors):
         if "-" in cell:
             cell = cell.replace(",", "")
             parts = [part.strip() for part in cell.split() if part.strip()]
-            updated_parts = ["С10" if part == "-" else part for part in parts]
+            updated_parts = ["С0" if part == "-" else part for part in parts]
             return ", ".join(updated_parts)
         return cell.strip()
 
@@ -24,7 +24,7 @@ def get_recommendations_for_sectors(sectors):
         return ", ".join(sectors)
 
     # Загрузка данных
-    df = pd.read_excel("data/recommendations.xlsx")
+    df = pd.read_excel("data/recommendations_2.xlsx")
 
     # Обработка данных
     df["Пример набора секторов пробоин с 10м"] = (

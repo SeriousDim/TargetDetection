@@ -5,14 +5,25 @@ from app.models.dto.hit import Hit
 from app.models.dto.hit_sector import HitSector
 from app.models.dto.target import Target
 from app.models.geometry.point import GeometricalPoint
-from app.models.sectors.sector import Sector
 
 
 def locate_point_sector(point: GeometricalPoint, target: Target):
-    if #точка ниже нижней линии мишени:
-        return Sector(name="10")
-    if not target.contains_point(point):
-        return Sector(name="0")
+    half_width = target.width / 2
+    half_height = target.height / 2
+
+    # Определение границ мишени
+    left_bound = target.center.x - half_width
+    right_bound = target.center.x + half_width
+    top_bound = target.center.y - half_height
+    bottom_bound = target.center.y + half_height
+
+    # Попадание ниже мишени - сектор "10"
+    if point.y > bottom_bound:
+        return SectorConfig.below_target_sector
+
+    # Попадание слева, справа или выше - сектор "0"
+    if point.x < left_bound or point.x > right_bound or point.y < top_bound:
+        return SectorConfig.out_of_bounds_sector
 
     normalized_point = GeometricalPoint(
         x=(point.x - target.center.x) / target.width,
@@ -21,13 +32,15 @@ def locate_point_sector(point: GeometricalPoint, target: Target):
 
     if SectorConfig.center_sector.contains_point(normalized_point):
         return SectorConfig.center_sector
+
     for sector in SectorConfig.angle_sectors:
         # Обрабатываем отдельно сектора на границах
         if sector.name == "3":
             continue
         if sector.contains_point(normalized_point):
             return sector
-    return SectorConfig.angle_sectors[1]
+    # return SectorConfig.angle_sectors[1]
+    return SectorConfig.out_of_bounds_sector
 
 
 def locate_hit_sector(hit: Hit, target: Target) -> HitSector:
@@ -44,10 +57,7 @@ def locate_hit_sector(hit: Hit, target: Target) -> HitSector:
         )
         sectors.append(result.name)
 
-    if "1" in sectors:
-        total_sector = "1"
-    else:
-        c = Counter(sectors)
-        total_sector = c.most_common(1)[0][0]
+    c = Counter(sectors)
+    total_sector = c.most_common(1)[0][0]
 
     return HitSector(hit_id=hit.id, sector=total_sector)

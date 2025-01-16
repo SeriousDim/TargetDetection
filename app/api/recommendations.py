@@ -6,6 +6,7 @@ from PIL import Image
 
 from app.machine_learning.hit_detection_model import HitDetectionModel
 from app.machine_learning.target_detection_model import TargetDetectionModel
+from app.models.dto.hit_sector import HitSector
 from app.services.hit_sector_service import locate_hit_sector
 from app.services.hit_service import filter_new_hits
 from app.services.image_processing import boxes_to_hits, boxes_to_targets
@@ -44,39 +45,55 @@ async def recommendations(file: UploadFile = File(...)):
 
     draw_target_grid(image, target)
     hit_sectors = [locate_hit_sector(hit, target) for hit in new_hits]
-    draw_hits(image, hit_sectors, new_hits)
+    print("hit_sectors:", hit_sectors, sep="\n")
+
+    # Фильтрация секторов с 1 по 9
+    primary_sectors = [
+        sector
+        for sector in hit_sectors
+        if sector.sector in [str(i) for i in range(1, 10)]
+    ]
+    print("primary_sectors:", primary_sectors, sep="\n")
+
+    # Если секторов с 1 по 9 меньше 4, добавляем сектора 0 или 10
+    if len(primary_sectors) < 4:
+        zero_sectors = [
+            sector for sector in hit_sectors if sector.sector == "0"
+        ]
+        print("zero_sectors:", zero_sectors, sep="\n")
+        ten_sectors = [
+            sector for sector in hit_sectors if sector.sector == "10"
+        ]
+        print("ten_sectors:", ten_sectors, sep="\n")
+
+        additional_sectors = zero_sectors + ten_sectors
+
+        while len(primary_sectors) < 4:
+            if additional_sectors:
+                primary_sectors.append(additional_sectors.pop(0))
+            else:
+                primary_sectors.append(HitSector(hit_id=-1, sector="0"))
+
+    print(f"Финальные сектора: {primary_sectors}")
+
+    draw_hits(image, primary_sectors, new_hits)
 
     img_byte_arr = BytesIO()
     image.save(img_byte_arr, format="PNG")
     img_byte_arr.seek(0)
-    base64_encoded_image = b64encode(img_byte_arr.getvalue()).decode(
-        "utf-8"
+    base64_encoded_image = b64encode(img_byte_arr.getvalue()).decode("utf-8")
+
+    sorted_primary_sectors = sorted(
+        primary_sectors, key=lambda x: int(x.sector)
     )
-
-    """
-    sectors_outside_target = filter(lambda e: e.sector == "0" or "10", hit_sectors)    
-    sectors_inside_target = filter(lambda e: e.sector >= "1" and e.sector <= "9", hit_sectors)
-
-    if len(sectors_inside_target) > 4:
-        Рекомендаций нет
-    else if len(sectors_inside_target) == 4:
-        Ищем рекомендацию
-
-    if len(sectors_inside_target) + len(sectors_outside_target) < 4:
-        Рекомендаций нет
-    
-    answer = sectors_inside_target
-
-    for i in range(4 - len(answer)):
-        answer.append(sectors_outside_target[i])
-    
-    """
-    sectors = ", ".join([f"С{sector.sector}" for sector in hit_sectors])
+    sectors = ", ".join(
+        [f"С{sector.sector}" for sector in sorted_primary_sectors]
+    )
     recommendation = get_recommendations_for_sectors(sectors)
 
     return {
         "target_name": target.name,
-        "hits_sectors": [sector.sector for sector in hit_sectors],
+        "hits_sectors": [sector.sector for sector in sorted_primary_sectors],
         "recommendation": recommendation,
         "image": base64_encoded_image,
     }

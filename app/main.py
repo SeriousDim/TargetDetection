@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from app.api.clear_hits import router as clear_hits_router
 from app.api.index import router as index_router
 from app.api.recommendations import router as recommendations_router
 
@@ -12,3 +13,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Подключение маршрутов
 app.include_router(index_router)
 app.include_router(recommendations_router)
+app.include_router(clear_hits_router)

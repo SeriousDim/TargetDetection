@@ -1,4 +1,4 @@
-from PIL import ImageDraw, ImageFont
+from PIL import ImageDraw
 
 from app.models.dto.hit import Hit
 from app.models.dto.hit_sector import HitSector
@@ -26,10 +26,13 @@ def draw_hit(image, sector_name: str, hit: Hit):
     y2 = hit.center.y + hit.height / 2
     draw.rectangle([x1, y1, x2, y2], outline=(0, 255, 255), width=2)
 
-    # font = ImageFont.truetype("./arial.ttf", 30)
     draw.text((x1 + 1, y1 + 1), sector_name, (0, 255, 255), font_size=45)
 
 
 def draw_hits(image, sectors: list[HitSector], hits: list[Hit]):
-    for i in range(len(sectors)):
-        draw_hit(image, sectors[i].sector, hits[i])
+    hits_dict = {hit.id: hit for hit in hits}
+
+    for sector in sectors:
+        hit = hits_dict.get(sector.hit_id)
+        if hit:
+            draw_hit(image, sector.sector, hit)
