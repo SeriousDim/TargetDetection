@@ -34,9 +34,6 @@ def locate_point_sector(point: GeometricalPoint, target: Target):
         return SectorConfig.center_sector
 
     for sector in SectorConfig.angle_sectors:
-        # Обрабатываем отдельно сектора на границах
-        if sector.name == "3":
-            continue
         if sector.contains_point(normalized_point):
             return sector
     # return SectorConfig.angle_sectors[1]
